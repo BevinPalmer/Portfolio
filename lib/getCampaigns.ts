@@ -8,6 +8,11 @@ export type Campaign = {
   frames: string[];
 };
 
+/** Display-name overrides when slug title-case isn’t right (e.g. acronyms). */
+const CLIENT_OVERRIDES: Record<string, string> = {
+  laa: "LAA",
+};
+
 export function getCampaigns(): Campaign[] {
   return campaignsManifest.map((c) => {
     const heroes =
@@ -18,7 +23,7 @@ export function getCampaigns(): Campaign[] {
           : [];
     return {
       slug: c.slug,
-      client: c.client,
+      client: CLIENT_OVERRIDES[c.slug] ?? c.client,
       hero: c.hero || heroes[0] || "",
       heroes,
       frames: [...c.frames],

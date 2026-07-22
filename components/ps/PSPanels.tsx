@@ -223,7 +223,8 @@ export function PSPanels() {
     workspaceChrome,
   } = usePSWorkspace();
 
-  const isCampaigns = workspaceChrome.mountKey === "campaigns" || pathname?.startsWith("/photography/campaigns");
+  const isCampaigns =
+    workspaceChrome.mountKey === "campaigns" || pathname?.startsWith("/campaigns");
 
   let inner: ReactNode = null;
   if (pathname === "/") {

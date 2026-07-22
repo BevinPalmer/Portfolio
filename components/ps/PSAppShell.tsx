@@ -17,6 +17,7 @@ function tabLabel(
   if (narrow) {
     if (pathname === "/") return "Home";
     if (pathname === "/photography") return "Photography";
+    if (pathname === "/campaigns" || pathname.startsWith("/campaigns/")) return "Campaigns";
     if (pathname === "/retouching") return "Retouching";
     if (pathname === "/about") return "About";
     if (pathname === "/contact") return "Contact";
@@ -24,6 +25,7 @@ function tabLabel(
   }
   if (pathname === "/") return "Home @ 100%";
   if (pathname === "/photography") return "Photography.psd @ 100%";
+  if (pathname === "/campaigns") return "Campaigns.psd @ 100%";
   if (pathname === "/retouching") return "Retouching.psd @ 100%";
   if (pathname === "/about") return "About.txt";
   if (pathname === "/contact") return "Contact.txt";
@@ -33,6 +35,7 @@ function tabLabel(
 /** Mobile menubar center label only (hidden on home). */
 function mobileRouteLabel(pathname: string): string {
   if (pathname === "/" || pathname === "") return "";
+  if (pathname.startsWith("/campaigns")) return "Campaigns";
   if (pathname.startsWith("/photography")) return "Photography";
   if (pathname.startsWith("/retouching")) return "Retouching";
   if (pathname.startsWith("/about")) return "About";
@@ -156,6 +159,7 @@ export function PSAppShell({ children }: { children: ReactNode }) {
           <span className="ps-menubar-route">{mobileRouteLabel(pathname)}</span>
           <nav className="ps-nav" aria-label="Primary">
             {navLink("/photography", "Photography")}
+            {navLink("/campaigns", "Campaigns")}
             {navLink("/retouching", "Retouching")}
             {navLink("/about", "About")}
             {navLink("/contact", "Contact")}
@@ -263,6 +267,9 @@ export function PSAppShell({ children }: { children: ReactNode }) {
         <nav className="ps-mobile-overlay-nav" aria-label="Primary">
           <Link href="/photography" className="ps-mobile-overlay-link" onClick={closeMobileNav}>
             Photography
+          </Link>
+          <Link href="/campaigns" className="ps-mobile-overlay-link" onClick={closeMobileNav}>
+            Campaigns
           </Link>
           <Link href="/retouching" className="ps-mobile-overlay-link" onClick={closeMobileNav}>
             Retouching

@@ -11,8 +11,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/photography",
     "/photography/fashion",
     "/photography/ecommerce",
-    "/photography/campaigns",
-    ...getCampaigns().map((c) => `/photography/campaigns/${c.slug}`),
+    "/campaigns",
+    ...getCampaigns().map((c) => `/campaigns/${c.slug}`),
   ];
 
   return routes.map((path) => ({
@@ -20,4 +20,3 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: new Date(),
   }));
 }
-

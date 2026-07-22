@@ -13,8 +13,11 @@ const CLIENT_OVERRIDES: Record<string, string> = {
   laa: "LAA",
 };
 
+/** Slugs listed here appear first (in this order); everything else follows A→Z. */
+const FEATURED_ORDER = ["yeezy"] as const;
+
 export function getCampaigns(): Campaign[] {
-  return campaignsManifest.map((c) => {
+  const mapped = campaignsManifest.map((c) => {
     const heroes =
       "heroes" in c && Array.isArray(c.heroes) && c.heroes.length > 0
         ? [...c.heroes]
@@ -28,6 +31,21 @@ export function getCampaigns(): Campaign[] {
       heroes,
       frames: [...c.frames],
     };
+  });
+
+  const featuredRank = new Map<string, number>(
+    FEATURED_ORDER.map((slug, i) => [slug, i]),
+  );
+
+  return mapped.sort((a, b) => {
+    const aFeat = featuredRank.has(a.slug);
+    const bFeat = featuredRank.has(b.slug);
+    if (aFeat && bFeat) {
+      return (featuredRank.get(a.slug) ?? 0) - (featuredRank.get(b.slug) ?? 0);
+    }
+    if (aFeat) return -1;
+    if (bFeat) return 1;
+    return a.slug.localeCompare(b.slug, undefined, { numeric: true });
   });
 }
 

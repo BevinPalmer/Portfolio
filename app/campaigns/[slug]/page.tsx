@@ -60,7 +60,7 @@ export default async function CampaignDetailPage({
           style={{
             position: "relative",
             overflow: "hidden",
-            height: "55vh",
+            height: "min(52vh, 560px)",
             width: "100%",
             background: "#111111",
           }}

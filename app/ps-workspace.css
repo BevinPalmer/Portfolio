@@ -635,16 +635,21 @@ body {
 /* Campaigns (/campaigns) — dark viewing background, flush like home */
 .ps-canvas-area.ps-canvas-area--campaigns {
   background: #191918;
-  overflow: auto;
+  /* Mount scrolls the document; area stays a fixed flex column. */
+  overflow: hidden;
 }
 
 .ps-canvas-mount.ps-canvas-mount--campaigns {
   background: #191918;
   padding: 0 !important;
   align-items: stretch;
-  overflow: visible;
+  justify-content: flex-start;
+  /* flex:1 + min-height:0 (from .ps-canvas-mount) — this is the scrollport */
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   height: auto;
-  min-height: 100%;
+  min-height: 0;
 }
 
 .ps-canvas-mount.ps-canvas-mount--campaigns .ps-canvas-checker {
@@ -657,6 +662,10 @@ body {
   width: 100%;
   max-width: 100%;
   padding-bottom: 0;
+  /* Grow with hero + reel so the mount can scroll to image-01… */
+  min-height: min-content;
+  height: auto;
+  align-self: stretch;
 }
 
 /* Retouching — dark chrome + flex column so viewer fills height */

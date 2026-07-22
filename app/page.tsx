@@ -1,46 +1,112 @@
-import { Container } from "@/components/Container";
-import { WorkGrid } from "@/components/WorkGrid";
-import fs from "node:fs/promises";
-import path from "node:path";
+import type { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
+import { HomeGifReel } from "@/components/HomeGifReel";
 
-const IMAGE_EXTENSIONS = new Set([".jpg", ".jpeg", ".png", ".gif", ".webp"]);
+export const metadata: Metadata = {
+  title: "Bevin Palmer",
+};
 
-function titleFromFilename(filename: string) {
-  const base = filename.replace(/\.[^/.]+$/, "");
-  const cleaned = base
-    .replace(/[_-]+/g, " ")
-    .replace(/\s+/g, " ")
-    .trim();
-  return cleaned.length ? cleaned : "Untitled";
-}
+/** `find public -iname "miguel*"` → public/photography/miguel.jpg → creative/miguel.jpg */
+const photoTileSrc = "/photography/miguel.jpg";
+const retouchTileSrc = "/retouching/dress-after.png";
 
-export default async function Home() {
-  const imagesDir = path.join(process.cwd(), "public", "images");
-  const entries = await fs.readdir(imagesDir, { withFileTypes: true });
-  const images = entries
-    .filter((e) => e.isFile())
-    .map((e) => e.name)
-    .filter((name) => IMAGE_EXTENSIONS.has(path.extname(name).toLowerCase()))
-    .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
-    .map((name) => ({
-      src: `/images/${encodeURIComponent(name)}`,
-      title: titleFromFilename(name),
-    }));
-
+export default function HomePage() {
   return (
-    <Container className="py-10 sm:py-14">
-      <div className="flex flex-col gap-2">
-        <h1 className="font-serif text-3xl tracking-[0.04em] sm:text-4xl">
-          Selected Work
-        </h1>
-        <p className="max-w-2xl text-sm leading-6 text-muted">
-          A clean, minimal grid—built for fast browsing. Drop your images into{" "}
-          <span className="font-mono">public/images</span> and they’ll appear here
-          automatically.
-        </p>
-      </div>
+    <>
+      <div
+        className="ps-home-hard w-full"
+        style={{
+          background: "#191918",
+          paddingTop: 20,
+          paddingBottom: 0,
+        }}
+      >
+        <div style={{ marginLeft: 20, marginRight: 20 }}>
+          <div className="grid w-full grid-cols-1 gap-px bg-[#111111] md:grid-cols-2">
+            <Link href="/photography" className="group block min-w-0">
+              <div
+                className="cursor-pointer"
+                style={{
+                  position: "relative",
+                  overflow: "hidden",
+                  height: "55vh",
+                  width: "100%",
+                }}
+              >
+                <Image
+                  src={photoTileSrc}
+                  alt="Photography"
+                  fill
+                  quality={88}
+                  sizes="50vw"
+                  className="object-cover"
+                  style={{ objectFit: "cover", objectPosition: "center 20%" }}
+                />
+                <div
+                  className="pointer-events-none absolute inset-0 bg-black/25 transition-colors duration-200 group-hover:bg-black/35"
+                  aria-hidden
+                />
+                <span
+                  className="pointer-events-none absolute inset-0 z-[1] flex items-center justify-center text-center font-[Helvetica_Neue,Helvetica,Arial,sans-serif] text-[11px] font-normal uppercase tracking-[0.26em] text-white/95"
+                  style={{
+                    textShadow:
+                      "0 1px 12px rgba(0,0,0,0.6), 0 0 24px rgba(0,0,0,0.4)",
+                  }}
+                >
+                  PHOTOGRAPHY
+                </span>
+              </div>
+            </Link>
 
-      <WorkGrid images={images} />
-    </Container>
+            <Link href="/retouching" className="group block min-w-0">
+              <div
+                className="cursor-pointer"
+                style={{
+                  position: "relative",
+                  overflow: "hidden",
+                  height: "55vh",
+                  width: "100%",
+                }}
+              >
+                <Image
+                  src={retouchTileSrc}
+                  alt="Retouching"
+                  fill
+                  quality={88}
+                  sizes="50vw"
+                  className="object-cover"
+                  style={{ objectFit: "cover", objectPosition: "center 20%" }}
+                />
+                <div
+                  className="pointer-events-none absolute inset-0 bg-black/35 transition-colors duration-200 group-hover:bg-black/45"
+                  aria-hidden
+                />
+                <span
+                  className="pointer-events-none absolute inset-0 z-[1] flex items-center justify-center text-center font-[Helvetica_Neue,Helvetica,Arial,sans-serif] text-[11px] font-normal uppercase tracking-[0.26em] text-white/95"
+                  style={{
+                    textShadow:
+                      "0 1px 12px rgba(0,0,0,0.6), 0 0 24px rgba(0,0,0,0.4)",
+                  }}
+                >
+                  RETOUCHING
+                </span>
+              </div>
+            </Link>
+          </div>
+        </div>
+
+        <div
+          aria-hidden
+          style={{
+            height: 1,
+            background: "#191918",
+            width: "100%",
+          }}
+        />
+
+        <HomeGifReel />
+      </div>
+    </>
   );
 }

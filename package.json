@@ -4,12 +4,16 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "generate:manifests": "node scripts/generate-manifests.mjs",
+    "prebuild": "npm run generate:manifests",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
   },
   "dependencies": {
+    "lucide-react": "^1.8.0",
     "next": "16.2.4",
+    "probe-image-size": "^7.2.3",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },

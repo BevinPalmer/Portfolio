@@ -7,15 +7,23 @@ import type { PropsWithChildren } from "react";
 export function NavLink({
   href,
   children,
-}: PropsWithChildren<{ href: string }>) {
+  /** When true, "Work" is active on home, /photography, and /retouching. */
+  workGroup,
+}: PropsWithChildren<{ href: string; workGroup?: boolean }>) {
   const pathname = usePathname();
-  const isActive = pathname === href;
+
+  const isActive = workGroup
+    ? pathname === "/" ||
+      pathname.startsWith("/photography") ||
+      pathname.startsWith("/retouching")
+    : pathname === href ||
+      (href !== "/" && pathname.startsWith(`${href}/`));
 
   return (
     <Link
       href={href}
       className={[
-        "text-[13px] tracking-[0.18em] uppercase transition-colors",
+        "text-[13px] font-normal leading-none tracking-[-0.01em] transition-colors",
         isActive ? "text-foreground" : "text-muted hover:text-foreground",
       ].join(" ")}
       aria-current={isActive ? "page" : undefined}
@@ -24,4 +32,3 @@ export function NavLink({
     </Link>
   );
 }
-

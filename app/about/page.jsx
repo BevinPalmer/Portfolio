@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { LINKEDIN_URL } from "@/lib/linkedin";
+import { CONTACT_EMAIL } from "@/lib/site-config";
 
 export const metadata = {
   title: "About",
@@ -22,8 +23,8 @@ export default function AboutPage() {
         Available for campaign, editorial, and on-set retouching work.
       </p>
 
-      <a href="mailto:hello@bevinpalmer.com" className="ps-about-mail">
-        hello@bevinpalmer.com
+      <a href={`mailto:${CONTACT_EMAIL}`} className="ps-about-mail">
+        {CONTACT_EMAIL}
       </a>
 
       <Link

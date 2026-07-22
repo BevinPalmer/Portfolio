@@ -1,4 +1,5 @@
 import { LINKEDIN_URL } from "@/lib/linkedin";
+import { CONTACT_EMAIL } from "@/lib/site-config";
 
 export function SiteFooter() {
   return (
@@ -39,10 +40,10 @@ export function SiteFooter() {
             ·
           </span>
           <a
-            href="mailto:hello@bevinpalmer.com"
+            href={`mailto:${CONTACT_EMAIL}`}
             className="transition hover:text-[#111111]"
           >
-            hello@bevinpalmer.com
+            {CONTACT_EMAIL}
           </a>
         </p>
       </div>

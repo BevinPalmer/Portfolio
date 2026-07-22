@@ -3,13 +3,13 @@ export const campaignsManifest = [
   {
     "slug": "yeezy",
     "client": "Yeezy",
-    "hero": "/campaigns/yeezy/Hero.jpg",
+    "hero": "/campaigns/yeezy/hero.jpg",
     "frames": [
-      "/campaigns/yeezy/reel/frame-01.gif",
-      "/campaigns/yeezy/reel/frame-02.gif",
-      "/campaigns/yeezy/reel/frame-03.gif",
-      "/campaigns/yeezy/reel/frame-04.gif",
-      "/campaigns/yeezy/reel/frame-05.gif"
+      "/campaigns/yeezy/frame-01.gif",
+      "/campaigns/yeezy/frame-02.gif",
+      "/campaigns/yeezy/frame-03.gif",
+      "/campaigns/yeezy/frame-04.gif",
+      "/campaigns/yeezy/frame-05.gif"
     ]
   }
 ] as const;

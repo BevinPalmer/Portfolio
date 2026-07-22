@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 import { PSPanels } from "@/components/ps/PSPanels";
 import { usePSWorkspace } from "@/components/ps/PSWorkspaceContext";
+import { CONTACT_EMAIL } from "@/lib/site-config";
 
 function tabLabel(
   pathname: string,
@@ -53,7 +54,7 @@ function statusLeft(
     return `Pair ${n} of ${t}  ·  ${Math.round(opts.split)}%  ·  Drag handle`;
   }
   if (pathname === "/about") return "Bevin Palmer  ·  Available for work";
-  if (pathname === "/contact") return "hello@bevinpalmer.com  ·  Response within 24h";
+  if (pathname === "/contact") return `${CONTACT_EMAIL}  ·  Response within 24h`;
   return "";
 }
 
@@ -76,7 +77,7 @@ function statusLeftMobile(
   return "";
 }
 
-const STATUS_RIGHT = "Bevin Palmer  ·  Los Angeles  ·  hello@bevinpalmer.com";
+const STATUS_RIGHT = `Bevin Palmer  ·  Los Angeles  ·  ${CONTACT_EMAIL}`;
 
 export function PSAppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname() ?? "/";
@@ -222,7 +223,7 @@ export function PSAppShell({ children }: { children: ReactNode }) {
                   workspaceChrome.statusLeftMobile,
                 )}
               </span>
-              <span className="ps-status-right ps-status-narrow">hello@bevinpalmer.com</span>
+              <span className="ps-status-right ps-status-narrow">{CONTACT_EMAIL}</span>
             </>
           ) : (
             <>
@@ -274,7 +275,7 @@ export function PSAppShell({ children }: { children: ReactNode }) {
           </Link>
         </nav>
         <p className="ps-mobile-overlay-email">
-          <a href="mailto:hello@bevinpalmer.com">hello@bevinpalmer.com</a>
+          <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
         </p>
       </div>
     </div>

@@ -211,28 +211,25 @@ async function buildCampaigns() {
   const items = [];
   for (const slug of dirs) {
     const campaignDir = path.join(baseDir, slug);
-    const reelDir = path.join(campaignDir, "reel");
     const campaignEntries = await safeReaddir(campaignDir);
-
-    const heroFile = campaignEntries
+    const files = campaignEntries
       .filter((e) => e.isFile())
       .map((e) => e.name)
       .filter((name) => name !== ".gitkeep")
-      .filter((name) => IMAGE_EXTS.has(path.extname(name).toLowerCase()))
+      .filter((name) => IMAGE_EXTS.has(path.extname(name).toLowerCase()));
+
+    const heroFile = files
       .filter((name) => {
         const stem = name.slice(0, -path.extname(name).length).toLowerCase();
         return stem === "hero";
       })
       .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))[0];
 
-    const reelEntries = await safeReaddir(reelDir);
-    const frames = reelEntries
-      .filter((e) => e.isFile())
-      .map((e) => e.name)
-      .filter((name) => name !== ".gitkeep")
-      .filter((name) => IMAGE_EXTS.has(path.extname(name).toLowerCase()))
+    // Flat layout: frame-*.gif|jpg|… in the campaign folder (not reel/)
+    const frames = files
+      .filter((name) => /^frame[-_]?\d+/i.test(name.slice(0, -path.extname(name).length)))
       .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
-      .map((name) => `/campaigns/${encodeURIComponent(slug)}/reel/${encodeURIComponent(name)}`);
+      .map((name) => `/campaigns/${encodeURIComponent(slug)}/${encodeURIComponent(name)}`);
 
     items.push({
       slug,

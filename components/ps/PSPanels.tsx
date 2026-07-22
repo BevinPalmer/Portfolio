@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { usePSWorkspace, type RetouchingPairItem } from "@/components/ps/PSWorkspaceContext";
+import { CONTACT_EMAIL } from "@/lib/site-config";
 
 function InfoRow({
   label,
@@ -155,7 +156,7 @@ function AboutFileInfoPanel() {
       <InfoRow label="ARTIST" value="Bevin Palmer" />
       <InfoRow label="LOCATION" value="Los Angeles, CA" />
       <InfoRow label="AVAILABLE" value="Yes" />
-      <InfoRow label="CONTACT" value="hello@bevinpalmer.com" />
+      <InfoRow label="CONTACT" value={CONTACT_EMAIL} />
       <InfoRow label="WEBSITE" value="bevinpalmer.com" />
     </div>
   );

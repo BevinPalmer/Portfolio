@@ -12,7 +12,11 @@ type Props = {
   slug?: string;
 };
 
-/** Pushes doc-tab / status / mount + optional FILE INFO into the PS shell on mount. */
+/**
+ * Pushes campaign chrome into the PS shell. When `slug` + `client` are set
+ * (detail page), also opens/activates a persistent doc tab — tabs are NOT
+ * cleared on unmount so they survive client navigations between campaigns.
+ */
 export function CampaignsChrome({
   docTab,
   docTabNarrow,
@@ -21,7 +25,12 @@ export function CampaignsChrome({
   client,
   slug,
 }: Props) {
-  const { setWorkspaceChrome, setCampaignPanelInfo, setCanvasFlush } = usePSWorkspace();
+  const {
+    setWorkspaceChrome,
+    setCampaignPanelInfo,
+    setCanvasFlush,
+    openCampaignDocTab,
+  } = usePSWorkspace();
 
   useEffect(() => {
     setCanvasFlush(true);
@@ -33,10 +42,14 @@ export function CampaignsChrome({
       mountKey: "campaigns",
     });
     setCampaignPanelInfo(client && slug ? { client, slug } : { client: "Campaigns", slug: "" });
+    if (client && slug) {
+      openCampaignDocTab({ client, slug });
+    }
     return () => {
       setCanvasFlush(false);
       setWorkspaceChrome({});
       setCampaignPanelInfo(null);
+      // Intentionally keep campaignDocTabs — multi-tab state lives in the root provider.
     };
   }, [
     docTab,
@@ -48,6 +61,7 @@ export function CampaignsChrome({
     setCanvasFlush,
     setWorkspaceChrome,
     setCampaignPanelInfo,
+    openCampaignDocTab,
   ]);
 
   return null;

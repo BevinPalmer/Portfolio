@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useEffect, useState, type ReactNode } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState, type MouseEvent, type ReactNode } from "react";
 import { PSPanels } from "@/components/ps/PSPanels";
 import { usePSWorkspace } from "@/components/ps/PSWorkspaceContext";
 import { CONTACT_EMAIL } from "@/lib/site-config";
@@ -80,10 +80,16 @@ function statusLeftMobile(
   return "";
 }
 
+function campaignSlugFromPath(pathname: string): string | null {
+  const m = pathname.match(/^\/campaigns\/([^/]+)\/?$/);
+  return m?.[1] ?? null;
+}
+
 const STATUS_RIGHT = `Bevin Palmer  ·  Los Angeles  ·  ${CONTACT_EMAIL}`;
 
 export function PSAppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname() ?? "/";
+  const router = useRouter();
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [narrowDocTab, setNarrowDocTab] = useState(false);
   const {
@@ -93,9 +99,18 @@ export function PSAppShell({ children }: { children: ReactNode }) {
     splitPercent,
     retouchingPairs,
     workspaceChrome,
+    campaignDocTabs,
+    closeCampaignDocTab,
+    openCampaignDocTab,
   } = usePSWorkspace();
 
   const closeMobileNav = () => setMobileNavOpen(false);
+  const activeCampaignSlug = campaignSlugFromPath(pathname);
+  const onCampaignsRoute =
+    pathname === "/campaigns" || pathname.startsWith("/campaigns/");
+  /** Multi-tab strip only on campaign detail routes with at least one open doc. */
+  const showCampaignMultiTabs =
+    onCampaignsRoute && campaignDocTabs.length > 0 && activeCampaignSlug !== null;
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -150,46 +165,91 @@ export function PSAppShell({ children }: { children: ReactNode }) {
     );
   };
 
+  const onCampaignTabClick = (slug: string, client: string) => {
+    if (slug === activeCampaignSlug) return;
+    openCampaignDocTab({ slug, client });
+    router.push(`/campaigns/${slug}`);
+  };
+
+  const onCampaignTabClose = (slug: string, e: MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const { navigateTo } = closeCampaignDocTab(slug, activeCampaignSlug);
+    if (navigateTo) router.push(navigateTo);
+  };
+
   return (
     <div className="ps-body">
       <header className="ps-menubar">
-          <Link href="/" className="ps-brand" onClick={closeMobileNav}>
-            BEVIN PALMER
-          </Link>
-          <span className="ps-menubar-route">{mobileRouteLabel(pathname)}</span>
-          <nav className="ps-nav" aria-label="Primary">
-            {navLink("/photography", "Photography")}
-            {navLink("/campaigns", "Campaigns")}
-            {navLink("/retouching", "Retouching")}
-            {navLink("/about", "About")}
-            {navLink("/contact", "Contact")}
-          </nav>
-          <button
-            type="button"
-            className={[
-              "ps-menubar-toggle",
-              mobileNavOpen ? "ps-menubar-toggle-open" : "",
-            ].join(" ")}
-            aria-label={mobileNavOpen ? "Close menu" : "Open menu"}
-            aria-expanded={mobileNavOpen}
-            onClick={() => setMobileNavOpen((o) => !o)}
-          >
-            {mobileNavOpen ? (
-              "×"
-            ) : (
-              <>
-                <span className="ps-menubar-toggle-icon" aria-hidden>
-                  ≡
-                </span>
-                <span className="ps-menubar-toggle-label">Menu</span>
-              </>
-            )}
-          </button>
-        </header>
+        <Link href="/" className="ps-brand" onClick={closeMobileNav}>
+          BEVIN PALMER
+        </Link>
+        <span className="ps-menubar-route">{mobileRouteLabel(pathname)}</span>
+        <nav className="ps-nav" aria-label="Primary">
+          {navLink("/photography", "Photography")}
+          {navLink("/campaigns", "Campaigns")}
+          {navLink("/retouching", "Retouching")}
+          {navLink("/about", "About")}
+          {navLink("/contact", "Contact")}
+        </nav>
+        <button
+          type="button"
+          className={[
+            "ps-menubar-toggle",
+            mobileNavOpen ? "ps-menubar-toggle-open" : "",
+          ].join(" ")}
+          aria-label={mobileNavOpen ? "Close menu" : "Open menu"}
+          aria-expanded={mobileNavOpen}
+          onClick={() => setMobileNavOpen((o) => !o)}
+        >
+          {mobileNavOpen ? (
+            "×"
+          ) : (
+            <>
+              <span className="ps-menubar-toggle-icon" aria-hidden>
+                ≡
+              </span>
+              <span className="ps-menubar-toggle-label">Menu</span>
+            </>
+          )}
+        </button>
+      </header>
 
-        <div className="ps-workspace-body">
-          <main className={canvasAreaClass}>
-            <div className="ps-doc-tabs">
+      <div className="ps-workspace-body">
+        <main className={canvasAreaClass}>
+          <div
+            className={`ps-doc-tabs${showCampaignMultiTabs ? " ps-doc-tabs--multi" : ""}`}
+            role={showCampaignMultiTabs ? "tablist" : undefined}
+          >
+            {showCampaignMultiTabs ? (
+              campaignDocTabs.map((tab) => {
+                const active = tab.slug === activeCampaignSlug;
+                return (
+                  <div
+                    key={tab.slug}
+                    role="tab"
+                    aria-selected={active}
+                    className={`ps-tab${active ? " ps-tab-active" : ""}`}
+                  >
+                    <button
+                      type="button"
+                      className="ps-tab-label"
+                      onClick={() => onCampaignTabClick(tab.slug, tab.client)}
+                    >
+                      {narrowDocTab ? tab.client : `${tab.client}.psd @ 100%`}
+                    </button>
+                    <button
+                      type="button"
+                      className="ps-tab-close"
+                      aria-label={`Close ${tab.client}`}
+                      onClick={(e) => onCampaignTabClose(tab.slug, e)}
+                    >
+                      ×
+                    </button>
+                  </div>
+                );
+              })
+            ) : (
               <div className="ps-tab ps-tab-active">
                 <span>
                   {tabLabel(pathname, narrowDocTab, {
@@ -201,51 +261,52 @@ export function PSAppShell({ children }: { children: ReactNode }) {
                   ×
                 </span>
               </div>
-            </div>
-            <div className="ps-ruler-h" aria-hidden />
-            <div className={mountClass}>
-              <div className={surfaceClass}>{children}</div>
-              <div className="ps-canvas-checker" aria-hidden />
-            </div>
-            {canvasUnderMount}
-            <div className="ps-canvas-zoom">100%</div>
-          </main>
-          <PSPanels />
-        </div>
+            )}
+          </div>
+          <div className="ps-ruler-h" aria-hidden />
+          <div className={mountClass}>
+            <div className={surfaceClass}>{children}</div>
+            <div className="ps-canvas-checker" aria-hidden />
+          </div>
+          {canvasUnderMount}
+          <div className="ps-canvas-zoom">100%</div>
+        </main>
+        <PSPanels />
+      </div>
 
-        <footer className="ps-statusbar">
-          {narrowDocTab ? (
-            <>
-              <span className="ps-status-left ps-status-narrow">
-                {statusLeftMobile(
-                  pathname,
-                  {
-                    pairIndex: retouchingIndex,
-                    pairTotal: retouchingPairs.length,
-                    split: splitPercent,
-                  },
-                  workspaceChrome.statusLeftMobile,
-                )}
-              </span>
-              <span className="ps-status-right ps-status-narrow">{CONTACT_EMAIL}</span>
-            </>
-          ) : (
-            <>
-              <span className="ps-status-left">
-                {statusLeft(
-                  pathname,
-                  {
-                    pairIndex: retouchingIndex,
-                    pairTotal: retouchingPairs.length,
-                    split: splitPercent,
-                  },
-                  workspaceChrome.statusLeft,
-                )}
-              </span>
-              <span className="ps-status-right">{STATUS_RIGHT}</span>
-            </>
-          )}
-        </footer>
+      <footer className="ps-statusbar">
+        {narrowDocTab ? (
+          <>
+            <span className="ps-status-left ps-status-narrow">
+              {statusLeftMobile(
+                pathname,
+                {
+                  pairIndex: retouchingIndex,
+                  pairTotal: retouchingPairs.length,
+                  split: splitPercent,
+                },
+                workspaceChrome.statusLeftMobile,
+              )}
+            </span>
+            <span className="ps-status-right ps-status-narrow">{CONTACT_EMAIL}</span>
+          </>
+        ) : (
+          <>
+            <span className="ps-status-left">
+              {statusLeft(
+                pathname,
+                {
+                  pairIndex: retouchingIndex,
+                  pairTotal: retouchingPairs.length,
+                  split: splitPercent,
+                },
+                workspaceChrome.statusLeft,
+              )}
+            </span>
+            <span className="ps-status-right">{STATUS_RIGHT}</span>
+          </>
+        )}
+      </footer>
 
       <div
         className={`ps-mobile-overlay${mobileNavOpen ? " ps-mobile-overlay-open" : ""}`}

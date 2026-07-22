@@ -386,6 +386,42 @@ body {
   padding: 0;
   background: var(--ps-border);
   flex-shrink: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.ps-doc-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.ps-doc-tabs--multi .ps-tab {
+  border: 0;
+  cursor: default;
+  font: inherit;
+}
+
+.ps-doc-tabs--multi .ps-tab-label {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  padding: 0;
+  cursor: pointer;
+}
+
+.ps-doc-tabs--multi .ps-tab .ps-tab-close {
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 2px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+}
+
+.ps-doc-tabs--multi .ps-tab .ps-tab-close:hover {
+  opacity: 1;
+  color: var(--ps-chrome-active);
 }
 
 .ps-tab {
@@ -419,6 +455,11 @@ body {
 
   .ps-tab .ps-tab-close {
     display: none;
+  }
+
+  /* Campaign multi-tabs keep close so docs can be dismissed on narrow. */
+  .ps-doc-tabs--multi .ps-tab .ps-tab-close {
+    display: inline;
   }
 }
 

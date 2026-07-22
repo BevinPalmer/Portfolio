@@ -5,6 +5,7 @@ import {
   useCallback,
   useContext,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "react";
@@ -40,6 +41,17 @@ export type CampaignPanelInfo = {
   slug: string;
 } | null;
 
+/** Open campaign document tabs (Campaigns section only). */
+export type CampaignDocTab = {
+  slug: string;
+  client: string;
+};
+
+export type CloseCampaignDocTabResult = {
+  /** Where to navigate after close; null = stay put. */
+  navigateTo: string | null;
+};
+
 type PSWorkspaceContextValue = {
   canvasFlush: boolean;
   setCanvasFlush: (v: boolean) => void;
@@ -58,6 +70,17 @@ type PSWorkspaceContextValue = {
   setWorkspaceChrome: (c: WorkspaceChrome) => void;
   campaignPanelInfo: CampaignPanelInfo;
   setCampaignPanelInfo: (p: CampaignPanelInfo) => void;
+  campaignDocTabs: CampaignDocTab[];
+  /** Open a campaign tab (append) or mark existing as most-recently-active. Order preserved. */
+  openCampaignDocTab: (tab: CampaignDocTab) => void;
+  /**
+   * Close a campaign tab. Pass `activeSlug` of the current route (or null on list).
+   * Returns where the shell should navigate next.
+   */
+  closeCampaignDocTab: (
+    slug: string,
+    activeSlug: string | null,
+  ) => CloseCampaignDocTabResult;
 };
 
 const PSWorkspaceContext = createContext<PSWorkspaceContextValue | null>(null);
@@ -71,6 +94,11 @@ export function PSWorkspaceProvider({ children }: { children: ReactNode }) {
   const [photoPanelInfo, setPhotoPanelInfo] = useState<PhotoDialogInfo>(null);
   const [workspaceChrome, setWorkspaceChromeState] = useState<WorkspaceChrome>({});
   const [campaignPanelInfo, setCampaignPanelInfo] = useState<CampaignPanelInfo>(null);
+  const [campaignDocTabs, setCampaignDocTabs] = useState<CampaignDocTab[]>([]);
+  /** Most-recently-active last — used when closing the active tab. */
+  const [campaignTabRecency, setCampaignTabRecency] = useState<string[]>([]);
+  const campaignDocsRef = useRef({ tabs: campaignDocTabs, recency: campaignTabRecency });
+  campaignDocsRef.current = { tabs: campaignDocTabs, recency: campaignTabRecency };
 
   const selectRetouchingPair = useCallback((i: number) => {
     setRetouchingIndex(i);
@@ -80,6 +108,38 @@ export function PSWorkspaceProvider({ children }: { children: ReactNode }) {
   const setWorkspaceChrome = useCallback((c: WorkspaceChrome) => {
     setWorkspaceChromeState(c);
   }, []);
+
+  const openCampaignDocTab = useCallback((tab: CampaignDocTab) => {
+    setCampaignDocTabs((prev) => {
+      if (prev.some((t) => t.slug === tab.slug)) return prev;
+      return [...prev, tab];
+    });
+    setCampaignTabRecency((prev) => [...prev.filter((s) => s !== tab.slug), tab.slug]);
+  }, []);
+
+  const closeCampaignDocTab = useCallback(
+    (slug: string, activeSlug: string | null): CloseCampaignDocTabResult => {
+      const { tabs: prevTabs, recency: prevRecency } = campaignDocsRef.current;
+      const nextTabs = prevTabs.filter((t) => t.slug !== slug);
+      const nextRecency = prevRecency.filter((s) => s !== slug);
+      setCampaignDocTabs(nextTabs);
+      setCampaignTabRecency(nextRecency);
+
+      const wasActive = activeSlug === slug;
+      if (!wasActive) return { navigateTo: null };
+
+      if (nextTabs.length === 0) {
+        return { navigateTo: "/campaigns" };
+      }
+
+      const fallback =
+        [...nextRecency].reverse().find((s) => nextTabs.some((t) => t.slug === s)) ??
+        nextTabs[nextTabs.length - 1]?.slug;
+
+      return { navigateTo: fallback ? `/campaigns/${fallback}` : "/campaigns" };
+    },
+    [],
+  );
 
   const value = useMemo(
     () => ({
@@ -100,6 +160,9 @@ export function PSWorkspaceProvider({ children }: { children: ReactNode }) {
       setWorkspaceChrome,
       campaignPanelInfo,
       setCampaignPanelInfo,
+      campaignDocTabs,
+      openCampaignDocTab,
+      closeCampaignDocTab,
     }),
     [
       canvasFlush,
@@ -112,6 +175,9 @@ export function PSWorkspaceProvider({ children }: { children: ReactNode }) {
       workspaceChrome,
       setWorkspaceChrome,
       campaignPanelInfo,
+      campaignDocTabs,
+      openCampaignDocTab,
+      closeCampaignDocTab,
     ],
   );
 

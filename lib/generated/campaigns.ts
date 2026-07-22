@@ -4,6 +4,10 @@ export const campaignsManifest = [
     "slug": "yeezy",
     "client": "Yeezy",
     "hero": "/campaigns/yeezy/hero.jpg",
+    "heroes": [
+      "/campaigns/yeezy/hero.jpg",
+      "/campaigns/yeezy/hero-02.jpg"
+    ],
     "frames": [
       "/campaigns/yeezy/frame-01.gif",
       "/campaigns/yeezy/frame-02.gif",

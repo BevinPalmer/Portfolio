@@ -218,12 +218,25 @@ async function buildCampaigns() {
       .filter((name) => name !== ".gitkeep")
       .filter((name) => IMAGE_EXTS.has(path.extname(name).toLowerCase()));
 
-    const heroFile = files
+    // hero.jpg, hero-02.jpg, hero-03.jpg… (hero alone sorts first)
+    const heroFiles = files
       .filter((name) => {
         const stem = name.slice(0, -path.extname(name).length).toLowerCase();
-        return stem === "hero";
+        return stem === "hero" || /^hero[-_]?\d+$/.test(stem);
       })
-      .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))[0];
+      .sort((a, b) => {
+        const key = (name) => {
+          const stem = name.slice(0, -path.extname(name).length).toLowerCase();
+          if (stem === "hero") return 0;
+          const m = stem.match(/^hero[-_]?(\d+)$/);
+          return m ? Number(m[1]) : 9999;
+        };
+        return key(a) - key(b) || a.localeCompare(b, undefined, { numeric: true });
+      });
+
+    const heroes = heroFiles.map(
+      (name) => `/campaigns/${encodeURIComponent(slug)}/${encodeURIComponent(name)}`,
+    );
 
     // Flat layout: frame-*.gif|jpg|… in the campaign folder (not reel/)
     const frames = files
@@ -234,9 +247,8 @@ async function buildCampaigns() {
     items.push({
       slug,
       client: clientFromSlug(slug),
-      hero: heroFile
-        ? `/campaigns/${encodeURIComponent(slug)}/${encodeURIComponent(heroFile)}`
-        : "",
+      hero: heroes[0] ?? "",
+      heroes,
       frames,
     });
   }

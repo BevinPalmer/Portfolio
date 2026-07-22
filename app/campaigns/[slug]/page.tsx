@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { notFound } from "next/navigation";
+import { CampaignHeroFade } from "@/components/ps/CampaignHeroFade";
 import { CampaignsChrome } from "@/components/ps/CampaignsChrome";
 import { GifReel } from "@/components/ps/GifReel";
 import { getCampaign, getCampaigns } from "@/lib/getCampaigns";
@@ -31,6 +31,13 @@ export default async function CampaignDetailPage({
   const campaign = getCampaign(slug);
   if (!campaign) notFound();
 
+  const heroes =
+    campaign.heroes.length > 0
+      ? campaign.heroes
+      : campaign.hero
+        ? [campaign.hero]
+        : [];
+
   return (
     <>
       <CampaignsChrome
@@ -58,21 +65,10 @@ export default async function CampaignDetailPage({
             background: "#111111",
           }}
         >
-          {campaign.hero ? (
-            <Image
-              src={campaign.hero}
-              alt={campaign.client}
-              fill
-              priority
-              quality={88}
-              sizes="100vw"
-              className="object-cover"
-              style={{ objectFit: "cover", objectPosition: "center 20%" }}
-            />
-          ) : null}
-          <div className="pointer-events-none absolute inset-0 bg-black/25" aria-hidden />
+          <CampaignHeroFade images={heroes} alt={campaign.client} />
+          <div className="pointer-events-none absolute inset-0 z-[2] bg-black/25" aria-hidden />
           <span
-            className="pointer-events-none absolute inset-0 z-[1] flex items-center justify-center text-center font-[Helvetica_Neue,Helvetica,Arial,sans-serif] text-[11px] font-normal uppercase tracking-[0.26em] text-white/95"
+            className="pointer-events-none absolute inset-0 z-[3] flex items-center justify-center text-center font-[Helvetica_Neue,Helvetica,Arial,sans-serif] text-[11px] font-normal uppercase tracking-[0.26em] text-white/95"
             style={{
               textShadow: "0 1px 12px rgba(0,0,0,0.6), 0 0 24px rgba(0,0,0,0.4)",
             }}

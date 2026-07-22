@@ -7,7 +7,20 @@ export const campaignsManifest = [
     "heroes": [
       "/campaigns/balenciaga/hero.jpg"
     ],
-    "frames": []
+    "frames": [
+      "/campaigns/balenciaga/image-01.png",
+      "/campaigns/balenciaga/image-02.png",
+      "/campaigns/balenciaga/image-03.png",
+      "/campaigns/balenciaga/image-04.png",
+      "/campaigns/balenciaga/image-05.png",
+      "/campaigns/balenciaga/image-06.png",
+      "/campaigns/balenciaga/image-07.png",
+      "/campaigns/balenciaga/image-08.png",
+      "/campaigns/balenciaga/image-09.png",
+      "/campaigns/balenciaga/image-10.png",
+      "/campaigns/balenciaga/image-11.png",
+      "/campaigns/balenciaga/image-12.png"
+    ]
   },
   {
     "slug": "laa",

@@ -17,7 +17,12 @@ function tabLabel(
   if (narrow) {
     if (pathname === "/") return "Home";
     if (pathname === "/photography") return "Photography";
-    if (pathname === "/campaigns" || pathname.startsWith("/campaigns/")) return "Campaigns";
+    if (pathname === "/campaigns") return "Campaigns";
+    if (pathname.startsWith("/campaigns/")) {
+      const slug = campaignSlugFromPath(pathname);
+      if (slug) return slug.charAt(0).toUpperCase() + slug.slice(1);
+      return "Campaigns";
+    }
     if (pathname === "/retouching") return "Retouching";
     if (pathname === "/about") return "About";
     if (pathname === "/contact") return "Contact";
@@ -26,6 +31,13 @@ function tabLabel(
   if (pathname === "/") return "Home @ 100%";
   if (pathname === "/photography") return "Photography.psd @ 100%";
   if (pathname === "/campaigns") return "Campaigns.psd @ 100%";
+  if (pathname.startsWith("/campaigns/")) {
+    const slug = campaignSlugFromPath(pathname);
+    if (slug) {
+      const name = slug.charAt(0).toUpperCase() + slug.slice(1);
+      return `${name}.psd @ 100%`;
+    }
+  }
   if (pathname === "/retouching") return "Retouching.psd @ 100%";
   if (pathname === "/about") return "About.txt";
   if (pathname === "/contact") return "Contact.txt";
@@ -170,6 +182,11 @@ export function PSAppShell({ children }: { children: ReactNode }) {
     router.push(`/campaigns/${slug}`);
   };
 
+  const onCampaignsIndexTabClick = () => {
+    if (activeCampaignSlug === null && pathname === "/campaigns") return;
+    router.push("/campaigns");
+  };
+
   const onCampaignTabClose = (slug: string, e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -221,33 +238,51 @@ export function PSAppShell({ children }: { children: ReactNode }) {
             role={showCampaignMultiTabs ? "tablist" : undefined}
           >
             {showCampaignMultiTabs ? (
-              campaignDocTabs.map((tab) => {
-                const active = tab.slug === activeCampaignSlug;
-                return (
-                  <div
-                    key={tab.slug}
-                    role="tab"
-                    aria-selected={active}
-                    className={`ps-tab${active ? " ps-tab-active" : ""}`}
+              <>
+                <div
+                  role="tab"
+                  aria-selected={activeCampaignSlug === null}
+                  className={`ps-tab${activeCampaignSlug === null ? " ps-tab-active" : ""}`}
+                >
+                  <button
+                    type="button"
+                    className="ps-tab-label"
+                    onClick={onCampaignsIndexTabClick}
                   >
-                    <button
-                      type="button"
-                      className="ps-tab-label"
-                      onClick={() => onCampaignTabClick(tab.slug, tab.client)}
+                    {narrowDocTab ? "Campaigns" : "Campaigns.psd @ 100%"}
+                  </button>
+                  <span className="ps-tab-close" aria-hidden>
+                    ×
+                  </span>
+                </div>
+                {campaignDocTabs.map((tab) => {
+                  const active = tab.slug === activeCampaignSlug;
+                  return (
+                    <div
+                      key={tab.slug}
+                      role="tab"
+                      aria-selected={active}
+                      className={`ps-tab${active ? " ps-tab-active" : ""}`}
                     >
-                      {narrowDocTab ? tab.client : `${tab.client}.psd @ 100%`}
-                    </button>
-                    <button
-                      type="button"
-                      className="ps-tab-close"
-                      aria-label={`Close ${tab.client}`}
-                      onClick={(e) => onCampaignTabClose(tab.slug, e)}
-                    >
-                      ×
-                    </button>
-                  </div>
-                );
-              })
+                      <button
+                        type="button"
+                        className="ps-tab-label"
+                        onClick={() => onCampaignTabClick(tab.slug, tab.client)}
+                      >
+                        {narrowDocTab ? tab.client : `${tab.client}.psd @ 100%`}
+                      </button>
+                      <button
+                        type="button"
+                        className="ps-tab-close"
+                        aria-label={`Close ${tab.client}`}
+                        onClick={(e) => onCampaignTabClose(tab.slug, e)}
+                      >
+                        ×
+                      </button>
+                    </div>
+                  );
+                })}
+              </>
             ) : (
               <div className="ps-tab ps-tab-active">
                 <span>

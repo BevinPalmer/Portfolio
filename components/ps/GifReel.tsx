@@ -5,8 +5,9 @@ type GifReelProps = {
   /**
    * `fit` — equal slots fill the row width (contact sheet).
    * `scroll` — fixed-size portrait slots; horizontal pan when they overflow.
+   * `auto` — `fit` for ≤6 frames, `scroll` when more (avoids unreadable slivers).
    */
-  layout?: "fit" | "scroll";
+  layout?: "fit" | "scroll" | "auto";
   /**
    * Slot aspect ratio (width / height). Portrait campaign frames default to 4/5.
    * Ignored only when omitted on home `fit` cover strips that share row height.
@@ -26,13 +27,13 @@ export function GifReel({
   className,
 }: GifReelProps) {
   const items = frames.filter((src) => typeof src === "string" && src.trim().length > 0);
-  const scroll = layout === "scroll";
 
   if (items.length === 0) return null;
 
   const n = items.length;
+  const scroll = layout === "scroll" || (layout === "auto" && n > 6);
 
-  const cell = (src: string) => (
+  const cell = (src: string, index: number) => (
     <div
       key={src}
       className="relative overflow-hidden bg-[#111111]"
@@ -55,6 +56,8 @@ export function GifReel({
         src={src}
         alt=""
         draggable={false}
+        loading={index < 2 ? "eager" : "lazy"}
+        decoding="async"
         style={{
           position: "absolute",
           inset: 0,
@@ -99,6 +102,7 @@ export function GifReel({
         gap: 0,
         width: "100%",
         background: "#191918",
+        cursor: "default",
       }}
     >
       {items.map(cell)}

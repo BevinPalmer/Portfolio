@@ -41,7 +41,7 @@ export default function CampaignsPage() {
             </p>
           ) : (
             <div className="grid w-full grid-cols-1 gap-px bg-[#111111] md:grid-cols-2">
-              {campaigns.map((campaign) => (
+              {campaigns.map((campaign, index) => (
                 <Link
                   key={campaign.slug}
                   href={`/campaigns/${campaign.slug}`}
@@ -62,7 +62,7 @@ export default function CampaignsPage() {
                         src={campaign.hero}
                         alt={campaign.client}
                         fill
-                        priority
+                        priority={index === 0}
                         quality={88}
                         sizes="(max-width: 767px) 100vw, 50vw"
                         className="object-cover"

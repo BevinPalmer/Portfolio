@@ -8,18 +8,18 @@ export const campaignsManifest = [
       "/campaigns/balenciaga/hero.jpg"
     ],
     "frames": [
-      "/campaigns/balenciaga/image-01.png",
-      "/campaigns/balenciaga/image-02.png",
-      "/campaigns/balenciaga/image-03.png",
-      "/campaigns/balenciaga/image-04.png",
-      "/campaigns/balenciaga/image-05.png",
-      "/campaigns/balenciaga/image-06.png",
-      "/campaigns/balenciaga/image-07.png",
-      "/campaigns/balenciaga/image-08.png",
-      "/campaigns/balenciaga/image-09.png",
-      "/campaigns/balenciaga/image-10.png",
-      "/campaigns/balenciaga/image-11.png",
-      "/campaigns/balenciaga/image-12.png"
+      "/campaigns/balenciaga/image-01.jpg",
+      "/campaigns/balenciaga/image-02.jpg",
+      "/campaigns/balenciaga/image-03.jpg",
+      "/campaigns/balenciaga/image-04.jpg",
+      "/campaigns/balenciaga/image-05.jpg",
+      "/campaigns/balenciaga/image-06.jpg",
+      "/campaigns/balenciaga/image-07.jpg",
+      "/campaigns/balenciaga/image-08.jpg",
+      "/campaigns/balenciaga/image-09.jpg",
+      "/campaigns/balenciaga/image-10.jpg",
+      "/campaigns/balenciaga/image-11.jpg",
+      "/campaigns/balenciaga/image-12.jpg"
     ]
   },
   {

@@ -4,6 +4,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -97,8 +98,12 @@ export function PSWorkspaceProvider({ children }: { children: ReactNode }) {
   const [campaignDocTabs, setCampaignDocTabs] = useState<CampaignDocTab[]>([]);
   /** Most-recently-active last — used when closing the active tab. */
   const [campaignTabRecency, setCampaignTabRecency] = useState<string[]>([]);
+  /** Synced in an effect — close handlers read latest tabs without updating refs during render. */
   const campaignDocsRef = useRef({ tabs: campaignDocTabs, recency: campaignTabRecency });
-  campaignDocsRef.current = { tabs: campaignDocTabs, recency: campaignTabRecency };
+
+  useEffect(() => {
+    campaignDocsRef.current = { tabs: campaignDocTabs, recency: campaignTabRecency };
+  }, [campaignDocTabs, campaignTabRecency]);
 
   const selectRetouchingPair = useCallback((i: number) => {
     setRetouchingIndex(i);

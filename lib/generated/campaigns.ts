@@ -8,13 +8,13 @@ export const campaignsManifest = [
       "/campaigns/laa/hero.jpg"
     ],
     "frames": [
-      "/campaigns/laa/00C86689-343A-4D03-951B-B428561FAFF9-1x.jpeg",
-      "/campaigns/laa/564.jpeg",
-      "/campaigns/laa/7428CE7C-3EF3-44F3-8348-AA828BF93B700.jpeg",
-      "/campaigns/laa/AFD861D2-2616-484D-9C59-05AE460A5D94-2x.jpeg",
-      "/campaigns/laa/R0001291.jpeg",
-      "/campaigns/laa/Untitled-65.jpeg",
-      "/campaigns/laa/Untitled-74.jpeg"
+      "/campaigns/laa/image-01.jpeg",
+      "/campaigns/laa/image-02.jpeg",
+      "/campaigns/laa/image-03.jpeg",
+      "/campaigns/laa/image-04.jpeg",
+      "/campaigns/laa/image-05.jpeg",
+      "/campaigns/laa/image-06.jpeg",
+      "/campaigns/laa/image-07.jpeg"
     ]
   },
   {

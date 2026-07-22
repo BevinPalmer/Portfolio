@@ -239,10 +239,20 @@ async function buildCampaigns() {
     );
 
     // Flat layout: frame-*.gif|jpg|… in the campaign folder (not reel/)
-    const frames = files
+    const namedFrames = files
       .filter((name) => /^frame[-_]?\d+/i.test(name.slice(0, -path.extname(name).length)))
-      .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
-      .map((name) => `/campaigns/${encodeURIComponent(slug)}/${encodeURIComponent(name)}`);
+      .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+
+    const heroSet = new Set(heroFiles);
+    const namedFrameSet = new Set(namedFrames);
+    // Any other images in the folder (e.g. dropped stills) become reel frames.
+    const leftoverFrames = files
+      .filter((name) => !heroSet.has(name) && !namedFrameSet.has(name))
+      .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+
+    const frames = [...namedFrames, ...leftoverFrames].map(
+      (name) => `/campaigns/${encodeURIComponent(slug)}/${encodeURIComponent(name)}`,
+    );
 
     items.push({
       slug,

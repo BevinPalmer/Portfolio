@@ -635,12 +635,16 @@ body {
 /* Campaigns (/campaigns) — dark viewing background, flush like home */
 .ps-canvas-area.ps-canvas-area--campaigns {
   background: #191918;
+  overflow: auto;
 }
 
 .ps-canvas-mount.ps-canvas-mount--campaigns {
   background: #191918;
   padding: 0 !important;
   align-items: stretch;
+  overflow: visible;
+  height: auto;
+  min-height: 100%;
 }
 
 .ps-canvas-mount.ps-canvas-mount--campaigns .ps-canvas-checker {

@@ -108,9 +108,8 @@ export function PSAppShell({ children }: { children: ReactNode }) {
   const activeCampaignSlug = campaignSlugFromPath(pathname);
   const onCampaignsRoute =
     pathname === "/campaigns" || pathname.startsWith("/campaigns/");
-  /** Multi-tab strip only on campaign detail routes with at least one open doc. */
-  const showCampaignMultiTabs =
-    onCampaignsRoute && campaignDocTabs.length > 0 && activeCampaignSlug !== null;
+  /** Multi-tab strip on any /campaigns route once at least one campaign doc is open. */
+  const showCampaignMultiTabs = onCampaignsRoute && campaignDocTabs.length > 0;
 
   useEffect(() => {
     if (typeof window === "undefined") return;

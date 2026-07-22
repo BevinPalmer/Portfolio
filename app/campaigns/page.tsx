@@ -62,12 +62,18 @@ export default function CampaignsPage() {
                         src={campaign.hero}
                         alt={campaign.client}
                         fill
+                        priority
                         quality={88}
                         sizes="(max-width: 767px) 100vw, 50vw"
                         className="object-cover"
                         style={{ objectFit: "cover", objectPosition: "center 20%" }}
                       />
-                    ) : null}
+                    ) : (
+                      <div
+                        className="absolute inset-0 flex items-center justify-center bg-[#1a1a19]"
+                        aria-hidden
+                      />
+                    )}
                     <div
                       className="pointer-events-none absolute inset-0 bg-black/25 transition-colors duration-200 group-hover:bg-black/35"
                       aria-hidden

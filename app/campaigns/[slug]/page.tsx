@@ -82,13 +82,7 @@ export default async function CampaignDetailPage({
         </div>
 
         {campaign.frames.length > 0 ? (
-          <GifReel
-            frames={campaign.frames}
-            layout="fit"
-            objectFit="contain"
-            heightMobile={240}
-            heightDesktop={440}
-          />
+          <GifReel frames={campaign.frames} layout="fit" slotAspect="4/5" />
         ) : null}
       </div>
     </>
